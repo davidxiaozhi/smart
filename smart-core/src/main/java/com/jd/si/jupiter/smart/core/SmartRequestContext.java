@@ -30,7 +30,7 @@ public class SmartRequestContext implements RequestContext
     private final ConnectionContext connectionContext;
     private final TProtocol inputProtocol;
     private final TProtocol outputProtocol;
-    private final TSmartTransport niftyTransport;
+    private final TSmartTransport smartTransport;
     private final ConcurrentMap<String, Object> data = Maps.newConcurrentMap();
 
     public TProtocol getInputProtocol()
@@ -45,7 +45,7 @@ public class SmartRequestContext implements RequestContext
 
     public TSmartTransport getSmartTransport()
     {
-        return niftyTransport;
+        return smartTransport;
     }
 
     public ConnectionContext getConnectionContext()
@@ -77,10 +77,10 @@ public class SmartRequestContext implements RequestContext
         return Collections.unmodifiableSet(data.entrySet()).iterator();
     }
 
-    public SmartRequestContext(ConnectionContext connectionContext, TProtocol inputProtocol, TProtocol outputProtocol, TSmartTransport niftyTransport)
+    public SmartRequestContext(ConnectionContext connectionContext, TProtocol inputProtocol, TProtocol outputProtocol, TSmartTransport smartTransport)
     {
         this.connectionContext = connectionContext;
-        this.niftyTransport = niftyTransport;
+        this.smartTransport = smartTransport;
         this.inputProtocol = inputProtocol;
         this.outputProtocol = outputProtocol;
     }

@@ -30,11 +30,7 @@ public class ConnectionContextHandler extends ChannelInboundHandlerAdapter
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //相关链接状态信息包装,由ChannelHandlerContext持有,并向下传递
-        SmartConnectionContext context = new SmartConnectionContext();
-        context.setRemoteAddress(ctx.channel().remoteAddress());
-        AttributeKey<SmartConnectionContext> remoteAddressKey= AttributeKey.newInstance("remoteAddress");
-        Attribute<SmartConnectionContext> remoteAddressAttr= ctx.attr(remoteAddressKey);
-        remoteAddressAttr.setIfAbsent(context);
+        ConnectionContexts.setContext(ctx);
         super.channelActive(ctx);//向下触发事件
     }
 }

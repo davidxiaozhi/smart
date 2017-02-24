@@ -18,9 +18,6 @@ package com.jd.si.jupiter.smart.codec;
 import com.jd.si.jupiter.smart.core.TSmartTransport;
 import com.jd.si.jupiter.smart.core.ThriftTransportType;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.UnpooledByteBufAllocator;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.TooLongFrameException;
@@ -50,20 +47,13 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
     }
 
     @Override
-    protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
-        return super.decode(ctx, in);
-    }
-
-    protected ThriftMessage decode(ChannelHandlerContext ctx, Channel channel, ByteBuf buffer)
-            throws Exception
-    {
+    protected Object decode(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
         if (!buffer.isReadable()) {
             return null;
         }
-
         short firstByte = buffer.getUnsignedByte(0);
         if (firstByte >= 0x80) {
-            ByteBuf messageBuffer = tryDecodeUnframedMessage(ctx, channel, buffer, inputProtocolFactory);
+            ByteBuf messageBuffer = tryDecodeUnframedMessage(ctx, buffer, inputProtocolFactory);
 
             if (messageBuffer == null) {
                 return null;
@@ -76,7 +66,7 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
             // Expecting a framed message, but not enough bytes available to read the frame size
             return null;
         } else {
-            ByteBuf messageBuffer = tryDecodeFramedMessage(ctx, channel, buffer, true);
+            ByteBuf messageBuffer = tryDecodeFramedMessage(ctx, buffer, true);
 
             if (messageBuffer == null) {
                 return null;
@@ -88,7 +78,6 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
     }
 
     protected ByteBuf tryDecodeFramedMessage(ChannelHandlerContext ctx,
-                                                   Channel channel,
                                                    ByteBuf buffer,
                                                    boolean stripFraming)
     {
@@ -134,14 +123,12 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
     /**
      * 无边框只能通过协议解析thrift流的大小
      * @param ctx
-     * @param channel
      * @param buffer
      * @param inputProtocolFactory
      * @return
      * @throws TException
      */
     protected ByteBuf tryDecodeUnframedMessage(ChannelHandlerContext ctx,
-                                                     Channel channel,
                                                      ByteBuf buffer,
                                                      TProtocolFactory inputProtocolFactory)
             throws TException
@@ -154,7 +141,7 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
 
         try {
             TSmartTransport decodeAttemptTransport =
-                    new TSmartTransport(channel, buffer, ThriftTransportType.UNFRAMED);
+                    new TSmartTransport(ctx.channel(), buffer, ThriftTransportType.UNFRAMED);
             int initialReadBytes = decodeAttemptTransport.getReadByteCount();
             TProtocol inputProtocol =
                     inputProtocolFactory.getProtocol(decodeAttemptTransport);

@@ -58,9 +58,10 @@ public class SmartDispatcher extends SimpleChannelInboundHandler {
         this.taskTimeoutTimer = (def.getTaskTimeout() >= 0 ? null : timer);
         this.queueTimeoutMillis = def.getQueueTimeout();
     }
-
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object message)
             throws Exception {
+        System.out.println("====="+this.getClass().getSimpleName());
         if (message instanceof ThriftMessage) {
             ThriftMessage thriftMessage = (ThriftMessage) message;
             thriftMessage.setProcessStartTimeMillis(System.currentTimeMillis());
@@ -79,6 +80,8 @@ public class SmartDispatcher extends SimpleChannelInboundHandler {
             ctx.fireChannelRead(message);
         }
     }
+
+
     //取消父类当中的重写回调channelRead0 ,该方法目前这里什么也不处理
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -205,7 +208,9 @@ public class SmartDispatcher extends SimpleChannelInboundHandler {
                             }
                             //依据channel或得上下文当中的链接上下文当中的链接元数据信息,
                             // 与顶部ConnectionContextHandler保存元数据信息遥相呼应
-                            ConnectionContext connectionContext = ConnectionContexts.getContext(ctx.channel());
+                            //ConnectionContext connectionContext = ConnectionContexts.getContext(ctx);
+                            SmartConnectionContext connectionContext = new SmartConnectionContext();
+                            connectionContext.setRemoteAddress(ctx.channel().remoteAddress());
                             //为thrift处理器创建请求信息
                             RequestContext requestContext = new SmartRequestContext(connectionContext, inProtocol, outProtocol, messageTransport);
                             RequestContexts.setCurrentContext(requestContext);
@@ -263,7 +268,10 @@ public class SmartDispatcher extends SimpleChannelInboundHandler {
             TApplicationException x = new TApplicationException(TApplicationException.INTERNAL_ERROR,
                     "Server overloaded");
             sendTApplicationException(x, ctx, message, requestSequenceId, messageTransport, inProtocol, outProtocol);
+        } catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void deleteExpirationTimer(Timeout timeout) {

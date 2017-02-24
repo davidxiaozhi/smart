@@ -15,22 +15,26 @@
  */
 package com.jd.si.jupiter.smart.core;
 
-import com.google.common.base.Preconditions;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
 public class ConnectionContexts
 {
-    private static final AttributeKey<ConnectionContexts> attachment_key =
-            AttributeKey.valueOf(ConnectionContexts.class.getSimpleName());
-    public static ConnectionContext getContext(Channel channel)
+    private static final AttributeKey<SmartConnectionContext> attachment_key =
+            AttributeKey.valueOf("remoteAddress");
+    public static SmartConnectionContext getContext(ChannelHandlerContext ctx)
     {
-        ConnectionContext context = (ConnectionContext)
-                channel.pipeline()
-                        .context(ConnectionContextHandler.class)
-                .channel()
-                .attr(attachment_key);//4.0去除attachment ,变更为AttributeKey
-        Preconditions.checkState(context != null, "Context not yet set on channel %s", channel);
+        //相关链接状态信息包装,由ChannelHandlerContext持有,并向下传递
+        Attribute<SmartConnectionContext> remoteAddressAttr= ctx.attr(attachment_key);
+        SmartConnectionContext context = remoteAddressAttr.get();
         return context;
+    }
+    public static void setContext(ChannelHandlerContext ctx){
+        SmartConnectionContext context = new SmartConnectionContext();
+        context.setRemoteAddress(ctx.channel().remoteAddress());
+        Attribute<SmartConnectionContext> remoteAddressAttr= ctx.attr(attachment_key);
+        remoteAddressAttr.setIfAbsent(context);
+        System.out.println();
     }
 }
