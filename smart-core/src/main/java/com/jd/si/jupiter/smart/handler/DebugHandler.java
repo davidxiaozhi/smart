@@ -17,104 +17,139 @@ import java.net.SocketAddress;
  */
 public class DebugHandler extends ChannelDuplexHandler {
     public final String name;
-    public DebugHandler(String name) {
+    public final boolean isPrint;
+
+    public DebugHandler(String name, boolean isPrint) {
         super();
         this.name = name;
+        this.isPrint = isPrint;
     }
 
     @Override
     public void bind(ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise future) throws Exception {
-        System.out.println("debug("+this.name+"):event = bind");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = bind");
+        }
         super.bind(ctx, localAddress, future);
     }
 
     @Override
     public void connect(ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise future) throws Exception {
-        System.out.println("debug("+this.name+"):event = connect");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = connect");
+        }
         super.connect(ctx, remoteAddress, localAddress, future);
     }
 
     @Override
     public void disconnect(ChannelHandlerContext ctx, ChannelPromise future) throws Exception {
-        System.out.println("debug("+this.name+"):event = disconnect");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = disconnect");
+        }
         super.disconnect(ctx, future);
     }
 
     @Override
     public void close(ChannelHandlerContext ctx, ChannelPromise future) throws Exception {
-        System.out.println("debug("+this.name+"):event = close");
-        super.close(ctx,future);
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = close");
+        }
+        super.close(ctx, future);
     }
 
     @Override
     public void deregister(ChannelHandlerContext ctx, ChannelPromise future) throws Exception {
-        System.out.println("debug("+this.name+"):event = deregister");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = deregister");
+        }
         super.deregister(ctx, future);
     }
 
     @Override
     public void read(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = read");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = read");
+        }
         super.read(ctx);
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        System.out.println("debug("+this.name+"):event = write");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = write");
+        }
         super.write(ctx, msg, promise);
     }
 
     @Override
     public void flush(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = flush");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = flush");
+        }
         super.flush(ctx);
     }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelRegistered");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelRegistered");
+        }
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelUnregistered");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelUnregistered");
+        }
         super.channelUnregistered(ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelActive");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelActive");
+        }
         super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelInactive");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelInactive");
+        }
         super.channelInactive(ctx);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelRead");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelRead");
+        }
         super.channelRead(ctx, msg);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelReadComplete");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelReadComplete");
+        }
         super.channelReadComplete(ctx);
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        System.out.println("debug("+this.name+"):event = userEventTriggered");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = userEventTriggered");
+        }
         super.userEventTriggered(ctx, evt);
     }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("debug("+this.name+"):event = channelWritabilityChanged");
+        if (isPrint) {
+            System.out.println("debug(" + this.name + "):event = channelWritabilityChanged");
+        }
         super.channelWritabilityChanged(ctx);
     }
 

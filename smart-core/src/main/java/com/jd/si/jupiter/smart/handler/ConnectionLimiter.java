@@ -13,7 +13,7 @@ public class ConnectionLimiter extends ChannelInboundHandlerAdapter {
         this.maxConnections = maxConnections;
         this.numConnections = new AtomicInteger(0);
     }
-
+    @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         //超过最大数目值是关闭
         if (maxConnections > 0 && numConnections.incrementAndGet() > maxConnections) {
@@ -25,11 +25,14 @@ public class ConnectionLimiter extends ChannelInboundHandlerAdapter {
         System.out.println("Accepted connection nums: " + numConnections.get()+" maxConnections: "+maxConnections);
         super.channelRegistered(ctx);
     }
-
+    @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         if (maxConnections > 0 && numConnections.decrementAndGet() < 0) {
             System.out.println("BUG in ConnectionLimiter!!!!!");
         }
         super.channelUnregistered(ctx);
     }
+
+
+
 }

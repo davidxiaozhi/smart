@@ -36,8 +36,8 @@ public class ThriftFrameCodec extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println("decoder  for thrift");
-        decoder.channelRead(ctx, msg);
-        super.channelRead(ctx, msg);
+        decoder.channelRead(ctx, msg);//decode里面的channelRead会依据情况触发下一个channelread的执行，因此这里不要再次出发
+        //super.channelRead(ctx, msg);
     }
 
     @Override

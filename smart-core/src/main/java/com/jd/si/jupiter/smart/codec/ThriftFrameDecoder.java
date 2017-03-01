@@ -19,8 +19,11 @@ import com.jd.si.jupiter.smart.core.TSmartTransport;
 import com.jd.si.jupiter.smart.core.ThriftTransportType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.TooLongFrameException;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.internal.RecyclableArrayList;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
@@ -47,7 +50,16 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
     }
 
     @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if(msg instanceof ByteBuf){
+            ReferenceCountUtil.retain(msg);
+        }
+        super.channelRead(ctx, msg);
+    }
+
+    @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
+
         if (!buffer.isReadable()) {
             return null;
         }
@@ -58,7 +70,6 @@ public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
             if (messageBuffer == null) {
                 return null;
             }
-
             // A non-zero MSB for the first byte of the message implies the message starts with a
             // protocol id (and thus it is unframed).
             return new ThriftMessage(messageBuffer,ThriftTransportType.UNFRAMED);

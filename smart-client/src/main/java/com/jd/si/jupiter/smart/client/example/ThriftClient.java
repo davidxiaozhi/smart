@@ -19,12 +19,31 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransportException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class ThriftClient {
     public static void main(String[] args) {
+        //sync();
+        moreThread();
+    }
+    private  static void moreThread(){
+        ExecutorService service = Executors.newCachedThreadPool();
+        for (int i = 0; i < 100; i++) {
+            service.submit(new Runnable() {
+                @Override
+                public void run() {
+                    sync();
+                }
+            });
+        }
+        service.shutdown();
+    }
+    private static void sync() {
         try {
             TTransport transport = new TSocket("localhost", 9090);
             transport.open();
-            TProtocol protocol = new TBinaryProtocol(transport);
+            TProtocol protocol = new TBinaryProtocol(transport,true,true);
             Hello.Client client = new Hello.Client(protocol);
 
             perform(client);
@@ -36,11 +55,11 @@ public class ThriftClient {
     }
 
     private static void perform(Hello.Client client) throws TException {
-        for (int i = 0; i < 1 ; i++) {
+        for (int i = 0; i < 100 ; i++) {
             try {
                 System.out.println("第"+i+"次调用开始");
-                client.helloString(""+i);
-                System.out.println("第"+i+"次调用结束");
+               String result = client.helloString(""+i);
+                System.out.println("第"+i+"次调用结束 result="+result);
             }catch (Exception e){
                 e.printStackTrace();
             }

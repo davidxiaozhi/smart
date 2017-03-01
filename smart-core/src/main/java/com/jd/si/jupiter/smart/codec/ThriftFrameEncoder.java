@@ -15,16 +15,20 @@
  */
 package com.jd.si.jupiter.smart.codec;
 
+import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.TooLongFrameException;
+import io.netty.util.ReferenceCountUtil;
 
 import java.nio.channels.Channels;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static io.netty.buffer.Unpooled.wrappedBuffer;
@@ -41,8 +45,11 @@ public class ThriftFrameEncoder extends MessageToMessageEncoder<ThriftMessage>
         this.maxFrameSize = maxFrameSize;
         byteBufAllocator = new UnpooledByteBufAllocator(false);
     }
+
     @Override
     protected void encode(ChannelHandlerContext ctx, ThriftMessage message, List<Object> out) throws Exception {
+        //为了保证encode之后继续可用
+        ReferenceCountUtil.retain(message.getBuffer());
         int frameSize = message.getBuffer().readableBytes();
 
         if (message.getBuffer().readableBytes() > maxFrameSize)
@@ -55,7 +62,10 @@ public class ThriftFrameEncoder extends MessageToMessageEncoder<ThriftMessage>
         }
         switch (message.getTransportType()) {
             case UNFRAMED:
+                //System.out.println(message.getBuffer().toString(Charset.defaultCharset()));
+                //为什么不在需要一个单独的输出过滤器转换 message　to byte,因为这里直接就是thrift 的message byte,
                 out.add(message.getBuffer());
+                break;
             case FRAMED:
                 ByteBuf frameSizeBuffer = byteBufAllocator.buffer(8);
                 frameSizeBuffer.writeLong(message.getBuffer().readableBytes());

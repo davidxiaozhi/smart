@@ -12,10 +12,7 @@ import com.jd.si.jupiter.smart.processor.SmartProcessorFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.AttributeKey;
-import io.netty.util.Timeout;
-import io.netty.util.Timer;
-import io.netty.util.TimerTask;
+import io.netty.util.*;
 import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TMessage;
@@ -88,6 +85,11 @@ public class SmartDispatcher extends SimpleChannelInboundHandler {
 
     }
 
+    /**
+     * 判断响应是否有序
+     * @param ctx
+     * @param message
+     */
     private void checkResponseOrderingRequirements(ChannelHandlerContext ctx, ThriftMessage message) {
         //判定是否需要排序多个响应
         boolean messageRequiresOrderedResponses = message.isOrderedResponsesRequired();

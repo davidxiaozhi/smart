@@ -51,13 +51,14 @@ public class SmartChannelInitializer extends ChannelInitializer {
         cp.addLast("connectionContext", new ConnectionContextHandler());
         //用于限制服务端最大的链接数目
         cp.addLast("connectionLimiter", connectionLimiter);
+        cp.addLast("flush",new FlushHandler());
         //debug　 handler
-        cp.addLast("debug1", new DebugHandler("debug1"));
+        cp.addLast("debug1", new DebugHandler("debug1",false));
         //用于各种信息统计
         cp.addLast(ChannelStatistics.NAME, channelStatistics);
         //cp.addLast("encryptionHandler", securityHandlers.getEncryptionHandler());
         //thrift frame编码及解码
-        cp.addLast("debug2", new DebugHandler("debug2"));
+        cp.addLast("debug2", new DebugHandler("debug2",false));
         cp.addLast("frameCodec",
                 def.getThriftFrameCodecFactory().create(def.getMaxFrameSize(), inputProtocolFactory));
         //链接状态管理
@@ -73,10 +74,10 @@ public class SmartChannelInitializer extends ChannelInitializer {
 
         //cp.addLast("authHandler", securityHandlers.getAuthenticationHandler());
         //负责分发,确定由那个TProcessor处理器进行处理
-        cp.addLast("debug3", new DebugHandler("debug3"));
+        cp.addLast("debug3", new DebugHandler("debug3",false));
         cp.addLast("dispatcher", new SmartDispatcher(def, config.getTimer()));
         //日志处理
-        cp.addLast("debug4", new DebugHandler("debug4"));
+        cp.addLast("debug4", new DebugHandler("debug4",false));
         cp.addLast("exceptionLogger", new LoggingHandler());
     }
 }
