@@ -19,13 +19,14 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransportException;
 
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ThriftClient {
     public static void main(String[] args) {
-        //sync();
-        moreThread();
+        sync(true,100);
+        //moreThread();
     }
     private  static void moreThread(){
         ExecutorService service = Executors.newCachedThreadPool();
@@ -33,29 +34,40 @@ public class ThriftClient {
             service.submit(new Runnable() {
                 @Override
                 public void run() {
-                    sync();
+                    sync(true,100);
                 }
             });
         }
         service.shutdown();
     }
-    private static void sync() {
+    private static void sync(boolean isFrame,int times) {
         try {
-            TTransport transport = new TSocket("localhost", 9090);
-            transport.open();
-            TProtocol protocol = new TBinaryProtocol(transport,true,true);
+            TSocket transport = new TSocket("localhost", 9090);
+            transport.getSocket().setSoTimeout(100000);
+            TProtocol protocol;
+            if(isFrame){
+                OptionFramedTransport framedTransport = new OptionFramedTransport(transport,1024);
+                framedTransport.open();
+                protocol = new TBinaryProtocol(framedTransport,true,true);
+            }
+            else{
+                transport.open();
+                protocol = new TBinaryProtocol(transport,true,true);
+            }
             Hello.Client client = new Hello.Client(protocol);
 
-            perform(client);
+            perform(client,times);
 
             transport.close();
         } catch (TException te) {
             te.printStackTrace();
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
     }
 
-    private static void perform(Hello.Client client) throws TException {
-        for (int i = 0; i < 100 ; i++) {
+    private static void perform(Hello.Client client,int times) throws TException {
+        for (int i = 0; i < times ; i++) {
             try {
                 System.out.println("第"+i+"次调用开始");
                String result = client.helloString(""+i);

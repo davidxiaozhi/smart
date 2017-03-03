@@ -38,7 +38,7 @@ import java.nio.channels.Channels;
  */
 public class ThriftFrameDecoder extends LengthFieldBasedFrameDecoder
 {
-    public static final int MESSAGE_FRAME_SIZE = 8;
+    public static final int MESSAGE_FRAME_SIZE = 4;
     private final int maxFrameSize;
     private final TProtocolFactory inputProtocolFactory;
 

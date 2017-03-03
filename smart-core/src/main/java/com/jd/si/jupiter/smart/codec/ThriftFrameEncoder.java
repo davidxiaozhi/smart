@@ -36,7 +36,7 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
 public class ThriftFrameEncoder extends MessageToMessageEncoder<ThriftMessage>
 {
     private final long maxFrameSize;
-
+    public static final int MESSAGE_FRAME_SIZE = 4;
     private ByteBufAllocator byteBufAllocator;
 
     public ThriftFrameEncoder(long maxFrameSize)
@@ -48,8 +48,6 @@ public class ThriftFrameEncoder extends MessageToMessageEncoder<ThriftMessage>
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ThriftMessage message, List<Object> out) throws Exception {
-        //为了保证encode之后继续可用
-        ReferenceCountUtil.retain(message.getBuffer());
         int frameSize = message.getBuffer().readableBytes();
 
         if (message.getBuffer().readableBytes() > maxFrameSize)
@@ -62,14 +60,18 @@ public class ThriftFrameEncoder extends MessageToMessageEncoder<ThriftMessage>
         }
         switch (message.getTransportType()) {
             case UNFRAMED:
+                //为了保证encode之后继续可用
+                ReferenceCountUtil.retain(message.getBuffer());
                 //System.out.println(message.getBuffer().toString(Charset.defaultCharset()));
                 //为什么不在需要一个单独的输出过滤器转换 message　to byte,因为这里直接就是thrift 的message byte,
                 out.add(message.getBuffer());
                 break;
             case FRAMED:
-                ByteBuf frameSizeBuffer = byteBufAllocator.buffer(8);
-                frameSizeBuffer.writeLong(message.getBuffer().readableBytes());
+                ReferenceCountUtil.retain(message.getBuffer());
+                ByteBuf frameSizeBuffer = byteBufAllocator.buffer(MESSAGE_FRAME_SIZE);
+                frameSizeBuffer.writeInt(message.getBuffer().readableBytes());
                 out.add(wrappedBuffer(frameSizeBuffer, message.getBuffer()));
+                break;
 
             case HEADER:
                 throw new UnsupportedOperationException("Header transport is not supported");
