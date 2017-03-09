@@ -7,7 +7,7 @@ import com.si.jupiter.smart.client.channel.SmartClientChannel;
 import com.si.jupiter.smart.client.config.NettyClientConfig;
 import com.si.jupiter.smart.client.config.ThriftClientDef;
 import com.si.jupiter.smart.client.config.ThriftClientDefBuilder;
-import com.si.jupiter.smart.client.connector.NiftyClientConnector;
+import com.si.jupiter.smart.client.connector.SmartClientConnector;
 import com.si.jupiter.smart.client.example.Hello;
 import com.si.jupiter.smart.client.example.HelloImpl;
 import com.si.jupiter.smart.client.old.SmartClientChannelInitializer;
@@ -47,7 +47,7 @@ public class SmartClient {
         this.defaultSocksProxyAddress = nettyClientConfig.getDefaultSocksProxyAddress();
     }
     public <T extends SmartClientChannel> ListenableFuture<T> connectAsync(
-            NiftyClientConnector<T> clientChannelConnector)
+            SmartClientConnector<T> clientChannelConnector)
     {
         return connectAsync(clientChannelConnector,
                 DEFAULT_CONNECT_TIMEOUT,
@@ -58,7 +58,7 @@ public class SmartClient {
                 defaultSocksProxyAddress);
     }
     public <T extends SmartClientChannel> ListenableFuture<T> connectAsync(
-            NiftyClientConnector<T> clientChannelConnector,
+            SmartClientConnector<T> clientChannelConnector,
             Duration connectTimeout,
             Duration receiveTimeout,
             Duration readTimeout,
@@ -141,7 +141,7 @@ public class SmartClient {
 
     private class TSmartFuture<T extends SmartClientChannel> extends AbstractFuture<T>
     {
-        private TSmartFuture(final NiftyClientConnector<T> clientChannelConnector,
+        private TSmartFuture(final SmartClientConnector<T> clientChannelConnector,
                              final Duration receiveTimeout,
                              final Duration readTimeout,
                              final Duration sendTimeout,
@@ -178,5 +178,9 @@ public class SmartClient {
                 }
             });
         }
+    }
+
+    public NettyClientConfig getNettyClientConfig() {
+        return nettyClientConfig;
     }
 }

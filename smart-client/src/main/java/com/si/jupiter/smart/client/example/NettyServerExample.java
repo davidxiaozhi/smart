@@ -24,7 +24,6 @@ public class NettyServerExample {
                 .name("TestNettyServer")
                 .withProcessorFactory(SmartProcessorAdapters.factoryFromTProcessor(new Hello.Processor(new HelloImpl())));
         ThriftServerDef thriftServerDef = builder.build();
-        //NettyClientConfig nettyClientConfig = new NettyClientConfig();
         NettyServerConfigBuilder serverConfigbuilder = new NettyServerConfigBuilder();
         NettyServerConfig nettyServerConfig = serverConfigbuilder.setSmartName("TestSmartServer")
                 .setBossThreadCount(1)

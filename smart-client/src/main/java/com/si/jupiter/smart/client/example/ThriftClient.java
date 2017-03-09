@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 
 public class ThriftClient {
     public static void main(String[] args) {
-        sync(true,100);
+        sync(true,1);
         //moreThread();
     }
     private  static void moreThread(){

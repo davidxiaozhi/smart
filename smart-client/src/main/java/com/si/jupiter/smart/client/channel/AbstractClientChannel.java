@@ -75,6 +75,12 @@ public abstract class AbstractClientChannel extends ChannelDuplexHandler impleme
 
     protected abstract ByteBuf extractResponse(Object message) throws TTransportException;
 
+    /**
+     * 读取thrift请求响应的序号Id
+     * @param messageBuffer
+     * @return
+     * @throws TTransportException
+     */
     protected int extractSequenceId(ByteBuf messageBuffer)
             throws TTransportException {
         try {

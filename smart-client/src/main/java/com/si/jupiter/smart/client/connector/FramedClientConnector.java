@@ -30,7 +30,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 /***
- * A {@link NiftyClientConnector} specialized for {@link FramedClientConnector}
+ * A {@link SmartClientConnector} specialized for {@link FramedClientConnector}
  */
 public class FramedClientConnector extends AbstractClientConnector<FramedClientChannel> {
     // TFramedTransport framing appears at the front of the message
