@@ -122,8 +122,16 @@ public class TSmartClientChannelTransport extends TTransport
     public void flush()
             throws TTransportException
     {
-      this.channel.writeAndFlush(requestBufferTransport.getOutputBuffer(),new DefaultChannelPromise(this.channel));
-        this.channel.flush();
+      /*this.channel.writeAndFlush(requestBufferTransport.getOutputBuffer(),new SmartChannelPromise(this.channel));
+        this.channel.flush();*/
+    }
+
+    public TChannelBufferOutputTransport getRequestBufferTransport() {
+        return requestBufferTransport;
+    }
+
+    public TChannelBufferInputTransport getResponseBufferTransport() {
+        return responseBufferTransport;
     }
 
     public Channel getChannel() {
@@ -205,4 +213,6 @@ public class TSmartClientChannelTransport extends TTransport
             return response;
         }
     }
+
+
 }
