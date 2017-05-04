@@ -35,23 +35,23 @@ public class NettyClientConfigBuilder extends NettyConfigBuilderBase<NettyClient
 {
     private HostAndPort defaultSocksProxyAddress = null;
 
-    private final DefaultSocketChannelConfig socketChannelConfig = null ;
+    //private final DefaultSocketChannelConfig socketChannelConfig = null;
 
     public NettyClientConfigBuilder()
     {
         // Thrift turns TCP_NODELAY by default, and turning it off can have latency implications
         // so let's turn it on by default as well. It can still be switched off by explicitly
         // calling setTcpNodelay(false) after construction.
-        socketChannelConfig.setTcpNoDelay(true);
+        //socketChannelConfig.setTcpNoDelay(true);
     }
 
     /**
      * @return A mutable {@link DefaultSocketChannelConfig}
      */
-    public DefaultSocketChannelConfig getSocketChannelConfig()
+    /*public DefaultSocketChannelConfig getSocketChannelConfig()
     {
         return socketChannelConfig;
-    }
+    }*/
 
     /**
      * A default SOCKS proxy address for client connections. Defaults to {@code null} if not

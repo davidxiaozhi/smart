@@ -13,6 +13,7 @@
     <modules>
         <module>smart-core</module>
         <module>smart-client</module>
+        <module>smart-example</module>
     </modules>
     <build>
         <extensions>

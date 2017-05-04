@@ -19,6 +19,10 @@ public class SiHelloClient extends TServiceClient implements SIface
         send_helloString(para);
         return null;
     }
+    public String helloString2(String para) throws TException {
+        send_helloString(para);
+        return recv_helloString();
+    }
 
     public void send_helloString(String para) throws TException
     {

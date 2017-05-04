@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 
 public class ThriftClient {
     public static void main(String[] args) {
-        sync(true,1);
+        sync(true,5);
         //moreThread();
     }
     private  static void moreThread(){
@@ -39,7 +39,7 @@ public class ThriftClient {
     private static void sync(boolean isFrame,int times) {
         try {
             TSocket transport = new TSocket("localhost", 9090);
-            transport.getSocket().setSoTimeout(100000);
+            transport.getSocket().setSoTimeout(1000);
             TProtocol protocol;
             if(isFrame){
                 OptionFramedTransport framedTransport = new OptionFramedTransport(transport,1024);

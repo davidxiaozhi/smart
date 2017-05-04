@@ -43,7 +43,8 @@ public class FramedClientChannel extends AbstractClientChannel {
 
     @Override
     protected ChannelFuture writeRequest(ByteBuf request) {
-        return getNettyChannel().write(request);
+        Channel channel =getNettyChannel();
+        return channel.writeAndFlush(request);
     }
 
 }

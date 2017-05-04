@@ -24,8 +24,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.DefaultChannelPromise;
+import io.netty.util.concurrent.Future;
 import org.apache.thrift.TException;
 import org.apache.thrift.TServiceClient;
+import org.apache.thrift.protocol.TMessage;
+import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
@@ -38,14 +41,14 @@ import static com.google.common.collect.Maps.newHashMap;
 public class TSmartClientChannelTransport extends TTransport
 {
     private final Class<? extends TServiceClient> clientClass;
-    private final Channel channel;
+    private final SmartClientChannel channel;
     private final Map<String, Boolean> methodNameToOneWay;
     private final TChannelBufferOutputTransport requestBufferTransport;
     private final TChannelBufferInputTransport responseBufferTransport;
     private final BlockingQueue<ResponseListener> queuedResponses;
 
     public TSmartClientChannelTransport(
-            Class<? extends TServiceClient> clientClass, Channel channel)
+            Class<? extends TServiceClient> clientClass, SmartClientChannel channel)
     {
         this.clientClass = clientClass;
         this.channel = channel;
@@ -59,7 +62,7 @@ public class TSmartClientChannelTransport extends TTransport
     @Override
     public boolean isOpen()
     {
-        return channel.isOpen();
+        return channel.getNettyChannel().isOpen();
     }
 
     @Override
@@ -74,7 +77,7 @@ public class TSmartClientChannelTransport extends TTransport
     @Override
     public void close()
     {
-        channel.close();
+        channel.getNettyChannel().close();
     }
 
     @Override
@@ -122,20 +125,17 @@ public class TSmartClientChannelTransport extends TTransport
     public void flush()
             throws TTransportException
     {
-      /*this.channel.writeAndFlush(requestBufferTransport.getOutputBuffer(),new SmartChannelPromise(this.channel));
-        this.channel.flush();*/
-    }
-
-    public TChannelBufferOutputTransport getRequestBufferTransport() {
-        return requestBufferTransport;
-    }
-
-    public TChannelBufferInputTransport getResponseBufferTransport() {
-        return responseBufferTransport;
-    }
-
-    public Channel getChannel() {
-        return channel;
+        try {
+            boolean sendOneWay = inOneWayRequest();
+            ResponseListener listener = new ResponseListener();
+            channel.sendAsynchronousRequest(requestBufferTransport.getOutputBuffer().copy(), sendOneWay, listener);
+            queuedResponses.add(listener);
+            requestBufferTransport.resetOutputBuffer();
+        }
+        catch (TException e) {
+            Throwables.propagateIfInstanceOf(e, TTransportException.class);
+            throw new TTransportException(TTransportException.UNKNOWN, "Failed to use reflection on Client class to determine whether method is oneway", e);
+        }
     }
 
     private boolean inOneWayRequest()
@@ -143,14 +143,14 @@ public class TSmartClientChannelTransport extends TTransport
     {
         boolean isOneWayMethod = false;
 
-      /*  // Create a temporary transport wrapping the output buffer, so that we can read the method name for this message
+        // Create a temporary transport wrapping the output buffer, so that we can read the method name for this message
         TChannelBufferInputTransport requestReadTransport = new TChannelBufferInputTransport(requestBufferTransport.getOutputBuffer().duplicate());
         TProtocol protocol = channel.getProtocolFactory().getOutputProtocolFactory().getProtocol(requestReadTransport);
         TMessage message = protocol.readMessageBegin();
         String methodName = message.name;
 
         isOneWayMethod = clientClassHasReceiveHelperMethod(methodName);
-*/
+
         return isOneWayMethod;
     }
 
@@ -181,6 +181,19 @@ public class TSmartClientChannelTransport extends TTransport
         }
         return isOneWayMethod;
     }
+
+    public TChannelBufferOutputTransport getRequestBufferTransport() {
+        return requestBufferTransport;
+    }
+
+    public TChannelBufferInputTransport getResponseBufferTransport() {
+        return responseBufferTransport;
+    }
+
+    public SmartClientChannel getChannel() {
+        return channel;
+    }
+
 
     private static class ResponseListener implements SmartClientChannel.Listener
     {
@@ -213,6 +226,4 @@ public class TSmartClientChannelTransport extends TTransport
             return response;
         }
     }
-
-
 }

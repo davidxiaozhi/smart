@@ -140,7 +140,7 @@ public abstract class AbstractClientChannel extends ChannelDuplexHandler impleme
     @Override
     public void executeInIoThread(Runnable runnable) {
         NioSocketChannel nioSocketChannel = (NioSocketChannel) getNettyChannel();
-        //nioSocketChannel.getWorker().executeInIoThread(runnable, true);
+        nioSocketChannel.eventLoop().submit(runnable, true);
     }
 
     @Override

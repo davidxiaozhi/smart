@@ -4,6 +4,7 @@ package com.si.jupiter.smart.client.example;
 import com.google.common.net.HostAndPort;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.si.jupiter.smart.client.SmartClient;
+import com.si.jupiter.smart.client.channel.FramedClientChannel;
 import com.si.jupiter.smart.client.channel.SmartClientChannel;
 import com.si.jupiter.smart.client.config.NettyClientConfig;
 import com.si.jupiter.smart.client.config.NettyClientConfigBuilder;
@@ -13,6 +14,7 @@ import com.si.jupiter.smart.client.transport.TSmartClientChannelTransport;
 import com.si.jupiter.smart.duplex.TDuplexProtocolFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.DefaultChannelPromise;
+import io.netty.util.HashedWheelTimer;
 import io.netty.util.concurrent.Future;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -33,11 +35,11 @@ public class NettyClientExample {
         SmartClientConnector connector = new FramedClientConnector(config.getDefaultSocksProxyAddress());
         ListenableFuture<SmartClientChannel> channelFuture = client.connectAsync(connector);
         //channelFuture.get().getNettyChannel().writeAndFlush("");
-        //netty的channel构造transport为了transport的信息写入
-        TSmartClientChannelTransport clientTransport = new TSmartClientChannelTransport(null,channelFuture.get().getNettyChannel());
         //================================================
         //协议工厂负责序列化及反序列化
         TDuplexProtocolFactory duplexProtocolFactory =  TDuplexProtocolFactory.fromSingleFactory(new TBinaryProtocol.Factory(true,true));
+        //netty的channel构造transport为了transport的信息写入
+        TSmartClientChannelTransport clientTransport = new TSmartClientChannelTransport(null,channelFuture.get());
         //开始服务调用
         SIface iface = new SiHelloClient(duplexProtocolFactory.getInputProtocolFactory().getProtocol(clientTransport)
                 ,duplexProtocolFactory.getInputProtocolFactory().getProtocol(clientTransport));
@@ -49,7 +51,7 @@ public class NettyClientExample {
             e.printStackTrace();
         }
         ByteBuf output = clientTransport.getRequestBufferTransport().getOutputBuffer();
-        DefaultChannelPromise promise =new DefaultChannelPromise(channelFuture.get().getNettyChannel())new DefaultChannelPromise(channelFuture.get().getNettyChannel());
+        DefaultChannelPromise promise =new DefaultChannelPromise(channelFuture.get().getNettyChannel());
         channelFuture.get().getNettyChannel().writeAndFlush(output).get();
     }
 }
