@@ -13,7 +13,9 @@
     <modules>
         <module>smart-core</module>
         <module>smart-client</module>
-        <module>smart-example</module>
+        <module>smart-new-example</module>
+        <module>smart-new-core</module>
+        <module>smart-new-client</module>
     </modules>
     <build>
         <extensions>
