@@ -17,9 +17,9 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Date: 2017/01/04 09:40
  * 服务处理类
  */
-public class ServerManager {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServerManager.class);
-    private ProtocolProcesser protocolProcesser;
+public class ServiceInvokeManager {
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceInvokeManager.class);
+    private ProtocolProcesserImpl protocolProcesser;
     private ThreadPoolExecutor executor;
     private ServerConfig config;
 
@@ -29,14 +29,14 @@ public class ServerManager {
      * @param config   配置
      * @param executor 执行线程池
      */
-    public ServerManager(ServerConfig config, ThreadPoolExecutor executor) {
+    public ServiceInvokeManager(ServerConfig config, ThreadPoolExecutor executor) {
         this.executor = executor;
         this.config = config;
-        protocolProcesser = new ProtocolProcesser(null);
+        protocolProcesser = new ProtocolProcesserImpl(null);
     }
 
     /**
-     * 执行服务接口
+     * 在业务线程池当中执行服务接口调用
      *
      * @param protocol 网络协议对象
      * @param ctx      channel对象
@@ -45,11 +45,12 @@ public class ServerManager {
         this.executor.submit(new Runnable() {
             @Override
             public void run() {
+                //将协议当中context进行反序列化
                 RpcInvocation invocation = SerializableHandler.requestDecode(protocol);
                 long reqTime = invocation.getRequestTime();
                 int timeout = invocation.getRequestTimeout();
                 if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用执行了
-                    String methodName = ProtocolProcesser.buildMethodName(invocation.getMethod(), invocation.getArgTypes());
+                    String methodName = ProtocolProcesserImpl.buildMethodName(invocation.getMethod(), invocation.getArgTypes());
                     Object res = null;
                     Throwable throwable = null;
                     try {

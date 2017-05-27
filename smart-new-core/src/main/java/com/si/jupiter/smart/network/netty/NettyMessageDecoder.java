@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
  * Author: lizhipeng
  * Date: 2017/01/02 16:49
  * 协议解码器
+ * 　第一个字节 协议魔数
+ * 　第二个字节　协议版本
+ * 　第三个字节　协议类型
+ * 　第4-7字节　request序号
+ * 　第8-11字节　内容长度
  */
 public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
     private final static Logger LOGGER = LoggerFactory.getLogger(NettyMessageDecoder.class);
@@ -42,7 +47,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
     protected NetworkProtocol decode(ByteBuf in, ChannelHandlerContext ctx) throws Exception {
         if (in.readableBytes() > 0) {
             byte head = in.readByte();
-            if (head == 124) {
+            if (head == NetworkProtocol.MAGIC_NUMBER) {
                 byte version = in.readByte();
                 byte type = in.readByte();
                 int seq = in.readInt();
@@ -50,7 +55,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
                 byte[] content = new byte[len];
                 in.readBytes(content);
                 NetworkProtocol protocol = new NetworkProtocol();
-                protocol.setVersion(version);
+                protocol.setProtocolVersion(version);
                 protocol.setType(type);
                 protocol.setSequence(seq);
                 protocol.setContent(content);

@@ -1,6 +1,6 @@
 package com.si.jupiter.smart.network.netty;
 
-import com.si.jupiter.smart.clent.ClientConfig;
+import com.si.jupiter.smart.clent.config.ClientConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;

@@ -1,10 +1,14 @@
 package com.si.jupiter.smart.clent;
 
+import com.si.jupiter.smart.channel.SmartChannel;
+import com.si.jupiter.smart.clent.config.ClientConfig;
+import com.si.jupiter.smart.cluster.*;
 import com.si.jupiter.smart.core.*;
 import com.si.jupiter.smart.network.netty.NettyClient;
-import com.si.jupiter.smart.route.NodeInfo;
-import com.si.jupiter.smart.route.RpcRoute;
+import com.si.jupiter.smart.route.*;
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -16,26 +20,30 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 客户端管理类，后续可扩展为集群管理
  */
 public class ClientManager<T> {
+    private final static Logger LOGGER = LoggerFactory.getLogger(ClientManager.class);
     private static AtomicInteger seqCount = new AtomicInteger(0);
-    private ProtocolProcesser processer;
+    private ProtocolProcesserImpl processer;
     private ClientConfig config;
     private Invoker invoker;
     private NettyClient nettyClient;
     private RpcRoute route;
+    private ClusterManagerTask managerTask;
 
-    public ClientManager(ProtocolProcesser processer, ClientConfig config) {
+    public ClientManager(ProtocolProcesserImpl processer, ClientConfig config) {
         this.processer = processer;
         this.config = config;
         invoker = new ClientInvoker();
         nettyClient = new NettyClient(config);
-        route = config.getRoute().getRoute();
-    }
+        managerTask = new DefaultCMTask();
+        RouteEnum routeEnum = config.getRoute();
+        if(RouteEnum.CONSISTENTHASH.equals(routeEnum)){
+            route = new ConsistentHashRoute(config,managerTask);
+        }
+        else{
+            route = new RoundRoute(config,managerTask);
+        }
+        initCluster();
 
-    /**
-     * 初始化netty
-     */
-    public Channel initChannel(String ip, int port) {
-        return nettyClient.connect(ip, port);
     }
 
     /**
@@ -49,9 +57,9 @@ public class ClientManager<T> {
                 String[] ipPort = host.trim().split(":");
                 String ip = ipPort[0];
                 int port = Integer.parseInt(ipPort[1]);
-                Channel ch = this.initChannel(ip, port);
-                NodeInfo nodeInfo = new NodeInfo(ip, port);
-                route.addServerNode(nodeInfo, ch);
+                ServerNode serverNode = new ServerNode(ip, port);
+                serverNode.setServerStatus(ServerStatus.Serve);
+                managerTask.addClusterNode(serverNode);
             }
         }
     }
@@ -59,11 +67,20 @@ public class ClientManager<T> {
     /**
      * 获取客户端连接通道
      *
-     * @return Channel
+     * @return SmartChannel
      * @throws InterruptedException e
      */
-    public Channel getChannel() throws InterruptedException {
-        return this.route.getServer();
+    public SmartChannel getChannel() throws InterruptedException {
+        RequestContext requestContext = RequestContext.getContext();
+        String dispatchKey = requestContext.getDispachKey();
+        LOGGER.debug("-***-request-context-dispacher-key {} ",dispatchKey);
+        SmartChannel smartChannel = SmartChannel.EMPTY;
+        if(RouteEnum.CONSISTENTHASH.equals(config.getRoute())){
+            smartChannel = this.route.dispatcher(dispatchKey);
+        }
+        smartChannel = route.dispatcher();
+        LOGGER.debug("-***- get the serverNode of SmartChannel is  {} ",smartChannel.getServerNode());
+        return smartChannel;
     }
 
     /**
@@ -76,10 +93,16 @@ public class ClientManager<T> {
      */
     public T invoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(new SmartRequest(serviceName, this.config.getVersion(), method, args, seq));
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol, seq);
+        SmartChannel smartChannel = this.getChannel();
+        if(!SmartChannel.EMPTY.equals(smartChannel)){
+            this.invoker.invoke(smartChannel.getNettyChannel(), protocol, seq);
+        }
+        else{
+            System.out.println("-***-the channel is empty");
+        }
         RpcResult result = null;
         try {
             result = rpcFuture.get(config.getTimeout(), TimeUnit.MILLISECONDS);
@@ -108,10 +131,16 @@ public class ClientManager<T> {
      */
     public RpcFuture<T> asyncFutureInvoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(new SmartRequest(serviceName, this.config.getVersion(), method, args, seq));
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol, seq);
+        SmartChannel smartChannel = this.getChannel();
+        if(!SmartChannel.EMPTY.equals(smartChannel)){
+            this.invoker.invoke(smartChannel.getNettyChannel(), protocol, seq);
+        }
+        else{
+            System.out.println("-***-the channel is empty");
+        }
         return new ResultFuture<>(rpcFuture, seq);
     }
 
@@ -125,10 +154,16 @@ public class ClientManager<T> {
      */
     public void asyncCallbackInvoke(String serviceName, Method method, Object[] args, RpcCallback callback) throws Exception {
         int seq = createdPackageId();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(new SmartRequest(serviceName, this.config.getVersion(), method, args, seq));
         RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback, config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol, seq);
+        SmartChannel smartChannel = this.getChannel();
+        if(!SmartChannel.EMPTY.equals(smartChannel)){
+            this.invoker.invoke(smartChannel.getNettyChannel(), protocol, seq);
+        }
+        else{
+            System.out.println("-***-the channel is empty");
+        }
     }
 
     /**

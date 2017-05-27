@@ -1,7 +1,11 @@
-package com.si.jupiter.smart.clent;
+package com.si.jupiter.smart.clent.config;
 
+import com.si.jupiter.smart.clent.ClusterManagerType;
 import com.si.jupiter.smart.network.SerializableEnum;
 import com.si.jupiter.smart.route.RouteEnum;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: lizhipeng
@@ -16,8 +20,13 @@ public class ClientConfig<T> {
     private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式
     private int workThreadSize = 4;
     private int nettyBossThreadSize = 1;
-    private RouteEnum route = RouteEnum.RANDOM;//路由方式
+    private RouteEnum route = RouteEnum.ROUND;//路由方式
+    private ClusterManagerType clusterManagerType=ClusterManagerType.Local;
+    private ClientConfigOption clusterManagerConfig = new ClientConfigOption();
 
+    public <C> ClientConfigOption configOption(ConfigOption<C> option,C value){
+        return clusterManagerConfig.option(option,value);
+    }
     public String getHost() {
         return host;
     }
@@ -103,5 +112,9 @@ public class ClientConfig<T> {
     public ClientConfig setVersion(String version) {
         this.version = version;
         return this;
+    }
+
+    public ClusterManagerType getClusterManagerType() {
+        return clusterManagerType;
     }
 }

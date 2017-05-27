@@ -1,7 +1,7 @@
 package com.si.jupiter.smart.network.netty;
 
 import com.si.jupiter.smart.core.NetworkProtocol;
-import com.si.jupiter.smart.server.ServerManager;
+import com.si.jupiter.smart.server.ServiceInvokeManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -10,9 +10,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * Date: 2017/01/02 14:25
  */
 public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkProtocol> {
-    private ServerManager manager;
+    private ServiceInvokeManager manager;
 
-    public NettyServerHandler(ServerManager manager) {
+    public NettyServerHandler(ServiceInvokeManager manager) {
         this.manager = manager;
     }
 

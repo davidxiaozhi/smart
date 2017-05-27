@@ -4,7 +4,7 @@ package com.si.jupiter.smart.demo;
 import com.si.jupiter.smart.demo.idl.Test;
 import com.si.jupiter.smart.demo.idl.TestImpl;
 import com.si.jupiter.smart.server.Provider;
-import com.si.jupiter.smart.server.ScudServer;
+import com.si.jupiter.smart.server.SmartServer;
 import com.si.jupiter.smart.server.ServerConfig;
 
 /**
@@ -13,10 +13,15 @@ import com.si.jupiter.smart.server.ServerConfig;
  */
 public class Server {
     public static void main(String[] args) {
+        startServer(5050);
+        startServer(5051);
+        startServer(5052);
+    }
+    public static void startServer(int port){
         ServerConfig conf = new ServerConfig();
-        conf.setPort(7890).setCorePoolSize(12);
+        conf.setPort(port).setCorePoolSize(12);
         Provider<Test> provider = new Provider<Test>(Test.class, new TestImpl(), "1.0.1");
-        ScudServer server = new ScudServer(conf, provider);
+        SmartServer server = new SmartServer(conf, provider);
         server.start();
     }
 }

@@ -1,10 +1,10 @@
 package com.si.jupiter.smart.server;
 
 /**
- * Author: baichuan - lizhipeng
+ * Author: lizhipeng
  * Date: 2017/01/04 10:56
  */
-public class ServerConfig<T> {
+public class ServerConfig {
     private String ip = "0.0.0.0";
     private int port;//服务端口
     private int corePoolSize = 8;//服务work线程数

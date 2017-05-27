@@ -1,10 +1,12 @@
 package com.si.jupiter.smart.clent;
 
+import com.si.jupiter.smart.clent.config.ClientConfig;
+
 /**
  * Author: lizhipeng
  * Date: 2017/01/04 15:06
  */
-public class ScudClientFactory {
+public class SmartClientFactory {
 
     /**
      * 获得服务客户端
@@ -14,7 +16,7 @@ public class ScudClientFactory {
      * @return T
      */
     public static <T> T getServiceConsumer(ClientConfig<T> conf) {
-        ScudClient<T> client = new ScudClient<T>(conf);
+        SmartClient<T> client = new SmartClient<T>(conf);
         client.init();
         return client.getClient();
     }

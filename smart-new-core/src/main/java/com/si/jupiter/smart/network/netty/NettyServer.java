@@ -1,7 +1,7 @@
 package com.si.jupiter.smart.network.netty;
 
 import com.si.jupiter.smart.server.ServerConfig;
-import com.si.jupiter.smart.server.ServerManager;
+import com.si.jupiter.smart.server.ServiceInvokeManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
@@ -20,7 +20,7 @@ public class NettyServer {
     private static NioEventLoopGroup workerGroup;
     private static ChannelFuture future;
 
-    public static void start(ServerConfig config, ServerManager manager) {
+    public static void start(ServerConfig config, ServiceInvokeManager manager) {
         bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("netty-server-boss"));
         workerGroup = new NioEventLoopGroup(config.getNettyWorkPooleSize(), new DefaultThreadFactory("netty-server-work", true));
         ServerBootstrap boot = new ServerBootstrap();
@@ -41,7 +41,7 @@ public class NettyServer {
         System.out.println("*	██║  ██║██╔══██║╚██╗ ██╔╝██║██║  ██║ ██╔██╗ ██║██╔══██║██║   ██║ ███╔╝  ██╔══██║██║		   *");
         System.out.println("*	██████╔╝██║  ██║ ╚████╔╝ ██║██████╔╝██╔╝ ██╗██║██║  ██║╚██████╔╝███████╗██║  ██║██║		   *");
         System.out.println("*	╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝	v1.0.0 *");
-        System.out.println("***********************************************************************************************");
+        System.out.println("************************************************************************************************");
     }
 
     public static void stop() {

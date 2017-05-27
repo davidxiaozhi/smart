@@ -1,6 +1,6 @@
 package com.si.jupiter.smart.network.netty;
 
-import com.si.jupiter.smart.server.ServerManager;
+import com.si.jupiter.smart.server.ServiceInvokeManager;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -10,9 +10,9 @@ import io.netty.channel.socket.SocketChannel;
  * Date: 2017/01/02 14:22
  */
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
-    private ServerManager manager;
+    private ServiceInvokeManager manager;
 
-    public NettyServerInitializer(ServerManager manager) {
+    public NettyServerInitializer(ServiceInvokeManager manager) {
         this.manager = manager;
     }
 

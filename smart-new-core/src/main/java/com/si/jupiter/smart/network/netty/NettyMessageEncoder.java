@@ -11,6 +11,11 @@ import org.slf4j.LoggerFactory;
  * Author: lizhipeng
  * Date: 2017/01/02 16:44
  * 协议编码器
+ * 　第一个字节 协议魔数
+ * 　第二个字节　协议版本
+ * 　第三个字节　协议类型
+ * 　第4-7字节　request序号
+ * 　第8-11字节　内容长度
  */
 public class NettyMessageEncoder extends MessageToByteEncoder {
     private final static Logger LOGGER = LoggerFactory.getLogger(NettyMessageEncoder.class);
@@ -19,8 +24,8 @@ public class NettyMessageEncoder extends MessageToByteEncoder {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         NetworkProtocol p = (NetworkProtocol) msg;
         try {
-            out.writeByte(p.getHead());//head
-            out.writeByte(p.getVersion());//version
+            out.writeByte(p.getMagicNumber());//head
+            out.writeByte(p.getProtocolVersion());//version
             out.writeByte(p.getType());//type
             out.writeInt(p.getSequence());//seq
             out.writeInt(p.getContent().length);//len

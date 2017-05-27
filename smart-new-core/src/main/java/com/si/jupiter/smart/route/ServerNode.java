@@ -4,28 +4,33 @@ package com.si.jupiter.smart.route;
  * Author: lizhipeng
  * Date: 2017/01/09 10:46
  */
-public class NodeInfo {
+public class ServerNode {
     private String ip;
     private int port;
-    private int weight;//权重
+    private int weight = 1;//权重
     private String cluster;//服务所属集群
+    private ServerStatus serverStatus;//服务状态
 
-    public NodeInfo() {
+    public ServerNode() {
     }
 
-    public NodeInfo(String ip, int port) {
+    public ServerNode(String ip, int port) {
         this(ip, port, "");
     }
 
-    public NodeInfo(String ip, int port, String cluster) {
+    public ServerNode(String ip, int port, String cluster) {
         this(ip, port, cluster, 1);
     }
 
-    public NodeInfo(String ip, int port, String cluster, int weight) {
+    public ServerNode(String ip, int port, String cluster, int weight) {
         this.ip = ip;
         this.port = port;
         this.cluster = cluster;
         this.weight = weight;
+    }
+
+    public String getServerId(){
+        return this.ip+":"+this.port;
     }
 
     public String getIp() {
@@ -64,6 +69,19 @@ public class NodeInfo {
         return this.ip + ":" + this.port;
     }
 
+    public ServerStatus getServerStatus() {
+        return serverStatus;
+    }
+
+    public void setServerStatus(ServerStatus serverStatus) {
+        this.serverStatus = serverStatus;
+    }
+
+    /**
+     * 服务节点只要 ip 和 port 一致就相等
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -72,12 +90,12 @@ public class NodeInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (o instanceof NodeInfo) {
-            NodeInfo nodeInfo = (NodeInfo) o;
-            if (port != nodeInfo.port) {
+        if (o instanceof ServerNode) {
+            ServerNode serverNode = (ServerNode) o;
+            if (port != serverNode.port) {
                 return false;
             }
-            return !(ip != null ? !ip.equals(nodeInfo.ip) : nodeInfo.ip != null);
+            return !(ip != null ? !ip.equals(serverNode.ip) : serverNode.ip != null);
         }
         return false;
     }
@@ -91,11 +109,12 @@ public class NodeInfo {
 
     @Override
     public String toString() {
-        return "NodeInfo{" +
+        return "ServerNode{" +
                 "ip='" + ip + '\'' +
                 ", port=" + port +
                 ", weight=" + weight +
                 ", cluster='" + cluster + '\'' +
                 '}';
     }
+
 }
