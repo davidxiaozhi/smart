@@ -78,8 +78,9 @@ public class ClientManager<T> {
         if(RouteEnum.CONSISTENTHASH.equals(config.getRoute())){
             smartChannel = this.route.dispatcher(dispatchKey);
         }
-        smartChannel = route.dispatcher();
-        LOGGER.debug("-***- get the serverNode of SmartChannel is  {} ",smartChannel.getServerNode());
+        else {
+            smartChannel = route.dispatcher();
+        }LOGGER.debug("-***- get the serverNode of SmartChannel is  {} ",smartChannel.getServerNode());
         return smartChannel;
     }
 
