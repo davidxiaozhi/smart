@@ -69,7 +69,7 @@ public class ServiceInvokeManager {
                                 channelFuture.addListeners(new ChannelFutureListener() {
                                     @Override
                                     public void operationComplete(ChannelFuture future) throws Exception {
-                                        LOGGER.debug("Scud send msg packageId={} cost {}ms, exception={}", protocol.getSequence(), (System.currentTimeMillis() - startTime), future.cause());
+                                        LOGGER.debug("smart send msg packageId={} cost {}ms, exception={}", protocol.getSequence(), (System.currentTimeMillis() - startTime), future.cause());
                                     }
                                 });
                             }

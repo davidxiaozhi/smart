@@ -46,7 +46,7 @@ public class MessageManager {
     }
 
     static {
-        Timer timer = new Timer("Scud-response-timer", true);
+        Timer timer = new Timer("smart-response-timer", true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

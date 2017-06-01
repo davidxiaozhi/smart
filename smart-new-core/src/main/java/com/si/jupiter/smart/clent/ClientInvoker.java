@@ -29,7 +29,7 @@ public class ClientInvoker implements Invoker {
                         result.setException(future.cause());
                         MessageManager.release(packageId, result);
                     }
-                    LOGGER.debug("Scud send msg packageId={} cost {}ms, channel={}, exception= {}", protocol.getSequence(), (System.currentTimeMillis() - startTime), ch.toString(), future.cause());
+                    LOGGER.debug("smart send msg packageId={} cost {}ms, channel={}, exception= {}", protocol.getSequence(), (System.currentTimeMillis() - startTime), ch.toString(), future.cause());
                 }
             });
         }
