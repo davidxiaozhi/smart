@@ -1,7 +1,7 @@
 package com.si.jupiter.smart.cluster;
 
 import com.alibaba.fastjson.JSON;
-import com.jd.si.jupiter.zk.ZkOperator;
+import com.si.jupiter.smart.utils.zk.ZkOperator;
 import com.si.jupiter.smart.route.ServerNode;
 import com.si.jupiter.smart.server.ServerConfig;
 import org.apache.zookeeper.CreateMode;

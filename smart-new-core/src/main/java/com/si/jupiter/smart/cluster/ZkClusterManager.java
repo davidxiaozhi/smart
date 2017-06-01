@@ -1,12 +1,13 @@
 package com.si.jupiter.smart.cluster;
 
 import com.alibaba.fastjson.JSON;
-import com.jd.si.jupiter.zk.PathChangeDeal;
-import com.jd.si.jupiter.zk.PathChangeWatch;
-import com.jd.si.jupiter.zk.PathNode;
-import com.jd.si.jupiter.zk.ZkOperator;
+import com.alibaba.fastjson.TypeReference;
+import com.si.jupiter.smart.utils.zk.PathChangeDeal;
+import com.si.jupiter.smart.utils.zk.PathChangeWatch;
+import com.si.jupiter.smart.utils.zk.PathNode;
 import com.si.jupiter.smart.clent.config.ClientConfig;
 import com.si.jupiter.smart.route.ServerNode;
+import com.si.jupiter.smart.utils.zk.ZkOperator;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 
 /**
@@ -67,7 +68,7 @@ public class ZkClusterManager extends ClusterManger {
 
     private ServerNode contentToNode(String content){
         try {
-            ServerNode serverNode = (ServerNode) JSON.parse(content);
+            ServerNode serverNode = JSON.parseObject(content, ServerNode.class);
             return serverNode;
         }catch (Exception e){
             e.printStackTrace();
