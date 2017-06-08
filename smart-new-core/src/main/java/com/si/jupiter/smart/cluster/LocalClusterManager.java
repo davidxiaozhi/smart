@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * 　　　　　　　　　　　通过定时任务定时更新集群
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-19 上午11:31
+ * makeResource     :  17-5-19 上午11:31
  * Last Update:  17-5-19 上午11:31
  */
 public class LocalClusterManager extends ClusterManger {

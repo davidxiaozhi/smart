@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-18 下午8:42
+ * makeResource     :  17-5-18 下午8:42
  * Last Update:  17-5-18 下午8:42
  */
 public class ConfigOption<T> {

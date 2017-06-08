@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-18 上午11:09
+ * makeResource     :  17-5-18 上午11:09
  * Last Update:  17-5-18 上午11:09
  */
 public abstract class PoolManager {

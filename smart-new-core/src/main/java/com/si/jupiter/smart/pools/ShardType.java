@@ -4,7 +4,7 @@ package com.si.jupiter.smart.pools;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-12 下午1:45
+ * makeResource     :  17-5-12 下午1:45
  * Last Update:  17-5-12 下午1:45
  */
 public enum ShardType {

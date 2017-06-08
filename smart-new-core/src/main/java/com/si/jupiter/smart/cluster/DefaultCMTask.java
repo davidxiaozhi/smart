@@ -10,7 +10,7 @@ import java.util.List;
  * todo       : 集群管理任务，用于集群管理中心的回调操作
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-22 上午11:04
+ * makeResource     :  17-5-22 上午11:04
  * Last Update:  17-5-22 上午11:04
  */
 public class DefaultCMTask extends ClusterManagerTask {

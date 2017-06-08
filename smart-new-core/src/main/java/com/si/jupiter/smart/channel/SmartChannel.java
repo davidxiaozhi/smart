@@ -7,7 +7,7 @@ import io.netty.channel.Channel;
  * todo       : 针对 netty Channel进行分装
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-19 下午3:09
+ * makeResource     :  17-5-19 下午3:09
  * Last Update:  17-5-19 下午3:09
  */
 public class SmartChannel {

@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-27 下午2:42
+ * makeResource     :  17-5-27 下午2:42
  * Last Update:  17-5-27 下午2:42
  */
 public class SafeEncoder {

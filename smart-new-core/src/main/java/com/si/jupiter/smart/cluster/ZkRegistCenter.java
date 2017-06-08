@@ -10,7 +10,7 @@ import org.apache.zookeeper.CreateMode;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-15 下午2:38
+ * makeResource     :  17-5-15 下午2:38
  * Last Update:  17-5-15 下午2:38
  */
 public class ZkRegistCenter extends ServerRegistCenter{

@@ -4,7 +4,7 @@ package com.si.jupiter.smart.core;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-16 上午11:54
+ * makeResource     :  17-5-16 上午11:54
  * Last Update:  17-5-16 上午11:54
  */
 public class RequestContext {

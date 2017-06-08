@@ -9,7 +9,7 @@ import java.util.List;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-16 下午3:00
+ * makeResource     :  17-5-16 下午3:00
  * Last Update:  17-5-16 下午3:00
  */
 public abstract class ClusterManagerTask {

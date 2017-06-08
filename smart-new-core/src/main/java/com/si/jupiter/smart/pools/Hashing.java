@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-11 下午2:09
+ * makeResource     :  17-5-11 下午2:09
  * Last Update:  17-5-11 下午2:09
  */
 public interface Hashing {

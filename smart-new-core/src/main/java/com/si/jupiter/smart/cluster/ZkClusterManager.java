@@ -14,7 +14,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-12 下午3:59
+ * makeResource     :  17-5-12 下午3:59
  * Last Update:  17-5-12 下午3:59
  */
 public class ZkClusterManager extends ClusterManger {

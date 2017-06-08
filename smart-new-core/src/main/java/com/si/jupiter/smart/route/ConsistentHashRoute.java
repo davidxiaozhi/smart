@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-12 下午8:47
+ * makeResource     :  17-5-12 下午8:47
  * Last Update:  17-5-12 下午8:47
  */
 public class ConsistentHashRoute extends ShardPoolManager implements RpcRoute{

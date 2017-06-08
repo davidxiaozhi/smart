@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-19 上午11:00
+ * makeResource     :  17-5-19 上午11:00
  * Last Update:  17-5-19 上午11:00
  */
 public class ClientConfigOption {

@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * todo       : 负责所有client　channel
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-23 下午10:32
+ * makeResource     :  17-5-23 下午10:32
  * Last Update:  17-5-23 下午10:32
  */
 public class ShardPoolManager extends PoolManager{

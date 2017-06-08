@@ -6,7 +6,7 @@ import com.si.jupiter.smart.clent.config.ClientConfig;
  * todo       : todo something
  * Version    : 1.0
  * Author     : lizhipeng
- * create     :  17-5-12 下午3:58
+ * makeResource     :  17-5-12 下午3:58
  * Last Update:  17-5-12 下午3:58
  */
 public abstract class ClusterManger {
