@@ -1,14 +1,19 @@
 thrift基于netty升级至netty4.0
 
-1.RequestContext
 
-主要维护包装thrift请求
+niftyProcessor主要负责适配thrift原生的TProcessor
 
-2.niftyProcessor主要负责适配thrift原生的TProcessor
+ConnectionContext
 
-3.ConnectionContext
-
-4.thriftServerDef
+thriftServerDef
 
 thrift Server 定义
+
+管理
+客户端支持多种注册中心用于集群维护
+
+服务端　支持　总连接控制以及单ip连接控制　启动前依赖重量资源池管理
+
+协议
+私有协议头包装，序列化协议支持thrift protobuf 以及java版本不需要文件定义的protobuf
 
