@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Author: lizhipeng
  * Date: 2017/01/03 18:48
  */
-public class MessageManager {
+public class FuturesManager {
     private static Map<Integer, RpcFuture> msgManager = new ConcurrentHashMap<Integer, RpcFuture>(128);
 
     /**

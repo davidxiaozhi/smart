@@ -1,7 +1,7 @@
 package com.si.jupiter.smart.network.netty;
 
 
-import com.si.jupiter.smart.core.MessageManager;
+import com.si.jupiter.smart.core.FuturesManager;
 import com.si.jupiter.smart.core.NetworkProtocol;
 import com.si.jupiter.smart.core.RpcResult;
 import com.si.jupiter.smart.network.SerializableHandler;
@@ -33,7 +33,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<NetworkProto
                 public void run() {
                     try {
                         RpcResult result = SerializableHandler.responseDecode(msg);
-                        MessageManager.release(msg.getSequence(), result);
+                        FuturesManager.release(msg.getSequence(), result);
                     } catch (Exception e) {
                         LOGGER.error("Client handler fail.", e);
                     }

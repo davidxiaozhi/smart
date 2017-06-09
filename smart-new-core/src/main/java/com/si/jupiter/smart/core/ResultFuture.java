@@ -47,7 +47,7 @@ public class ResultFuture<T> extends ResponseFuture<T> {
             result = future.get();
         } finally {
             if (result == null) {//客户端超时
-                MessageManager.remove(packageId);
+                FuturesManager.remove(packageId);
             }
         }
         if (result != null) {
@@ -67,7 +67,7 @@ public class ResultFuture<T> extends ResponseFuture<T> {
             result = future.get(timeout, unit);
         } finally {
             if (result == null) {//客户端超时
-                MessageManager.remove(packageId);
+                FuturesManager.remove(packageId);
             }
         }
         if (result != null) {

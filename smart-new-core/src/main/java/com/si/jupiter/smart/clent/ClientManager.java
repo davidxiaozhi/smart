@@ -95,7 +95,7 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(new SmartRequest(serviceName, this.config.getVersion(), method, args, seq));
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
-        MessageManager.setSeq(seq, rpcFuture);
+        FuturesManager.setSeq(seq, rpcFuture);
         SmartChannel smartChannel = this.getChannel();
         if(!SmartChannel.EMPTY.equals(smartChannel)){
             this.invoker.invoke(smartChannel.getNettyChannel(), protocol, seq);
@@ -108,7 +108,7 @@ public class ClientManager<T> {
             result = rpcFuture.get(config.getTimeout(), TimeUnit.MILLISECONDS);
         } finally {
             if (result == null) {//客户端超时
-                MessageManager.remove(protocol.getSequence());
+                FuturesManager.remove(protocol.getSequence());
             }
         }
         if (result != null) {
@@ -133,7 +133,7 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(new SmartRequest(serviceName, this.config.getVersion(), method, args, seq));
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
-        MessageManager.setSeq(seq, rpcFuture);
+        FuturesManager.setSeq(seq, rpcFuture);
         SmartChannel smartChannel = this.getChannel();
         if(!SmartChannel.EMPTY.equals(smartChannel)){
             this.invoker.invoke(smartChannel.getNettyChannel(), protocol, seq);
@@ -156,7 +156,7 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(new SmartRequest(serviceName, this.config.getVersion(), method, args, seq));
         RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback, config.getTimeout());
-        MessageManager.setSeq(seq, rpcFuture);
+        FuturesManager.setSeq(seq, rpcFuture);
         SmartChannel smartChannel = this.getChannel();
         if(!SmartChannel.EMPTY.equals(smartChannel)){
             this.invoker.invoke(smartChannel.getNettyChannel(), protocol, seq);
