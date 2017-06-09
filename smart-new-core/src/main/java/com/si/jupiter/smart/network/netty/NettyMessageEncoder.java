@@ -26,7 +26,7 @@ public class NettyMessageEncoder extends MessageToByteEncoder {
         try {
             out.writeByte(p.getMagicNumber());//head
             out.writeByte(p.getProtocolVersion());//version
-            out.writeByte(p.getType());//type
+            out.writeByte(p.getSerializeType());//type
             out.writeInt(p.getSequence());//seq
             out.writeInt(p.getContent().length);//len
             out.writeBytes(p.getContent());

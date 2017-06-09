@@ -18,7 +18,7 @@ public class NetworkProtocol implements Serializable {
     public final static byte MAGIC_NUMBER = (byte) 89;//协议头
     private ProtocolHeader header;
     private byte protocolVersion =1;//协议版本
-    private byte type=1;//序列化方式
+    private byte serializeType =1;//序列化方式
     private int sequence;//包序号
     private int len;//内容长度
     private byte[] content;//包内容
@@ -44,12 +44,12 @@ public class NetworkProtocol implements Serializable {
         this.protocolVersion = protocolVersion;
     }
 
-    public byte getType() {
-        return type;
+    public byte getSerializeType() {
+        return serializeType;
     }
 
-    public void setType(byte type) {
-        this.type = type;
+    public void setSerializeType(byte serializeType) {
+        this.serializeType = serializeType;
     }
 
     public int getSequence() {

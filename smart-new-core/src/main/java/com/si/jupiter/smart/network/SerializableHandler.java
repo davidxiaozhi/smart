@@ -11,7 +11,7 @@ import com.si.jupiter.smart.core.RpcResult;
  */
 public class SerializableHandler {
     public static RpcInvocation requestDecode(NetworkProtocol protocol) {
-        RpcSerializable<RpcInvocation> ser = SerializableHandler.getSerializable(protocol.getType());
+        RpcSerializable<RpcInvocation> ser = SerializableHandler.getSerializable(protocol.getSerializeType());
         return ser.decode(protocol.getContent(), RpcInvocation.class);
     }
 
@@ -21,7 +21,7 @@ public class SerializableHandler {
     }
 
     public static RpcResult responseDecode(NetworkProtocol protocol) {
-        RpcSerializable<RpcResult> ser = SerializableHandler.getSerializable(protocol.getType());
+        RpcSerializable<RpcResult> ser = SerializableHandler.getSerializable(protocol.getSerializeType());
         return ser.decode(protocol.getContent(), RpcResult.class);
     }
 

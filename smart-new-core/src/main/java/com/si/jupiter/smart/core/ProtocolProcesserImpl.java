@@ -40,9 +40,11 @@ public class ProtocolProcesserImpl {
         }
 
         NetworkProtocol protocol = new NetworkProtocol();
-        protocol.setType(conf.getType().getValue());
+        protocol.setSerializeType(conf.getSerializeType().getValue());
         protocol.setSequence(smartRequest.getSeq());
-        byte[] content = SerializableHandler.requestEncode(protocol.getType(), invocation);
+
+        //序列化产生发送消息体二进制
+        byte[] content = SerializableHandler.requestEncode(protocol.getSerializeType(), invocation);
         protocol.setContent(content);
         return protocol;
     }
@@ -55,11 +57,11 @@ public class ProtocolProcesserImpl {
      * @return NettyProtocol
      */
     public NetworkProtocol buildResponseProtocol(NetworkProtocol requestProtocol, RpcResult result) {
-        byte[] content = SerializableHandler.responseEncode(requestProtocol.getType(), result);
+        byte[] content = SerializableHandler.responseEncode(requestProtocol.getSerializeType(), result);
         NetworkProtocol protocol = new NetworkProtocol();
         protocol.setContent(content);
         protocol.setSequence(requestProtocol.getSequence());
-        protocol.setType(requestProtocol.getType());
+        protocol.setSerializeType(requestProtocol.getSerializeType());
         protocol.setProtocolVersion(requestProtocol.getProtocolVersion());
         return protocol;
     }

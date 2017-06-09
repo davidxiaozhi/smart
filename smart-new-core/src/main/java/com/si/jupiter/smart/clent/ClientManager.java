@@ -6,7 +6,6 @@ import com.si.jupiter.smart.cluster.*;
 import com.si.jupiter.smart.core.*;
 import com.si.jupiter.smart.network.netty.NettyClient;
 import com.si.jupiter.smart.route.*;
-import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ public class ClientManager<T> {
     public ClientManager(ProtocolProcesserImpl processer, ClientConfig config) {
         this.processer = processer;
         this.config = config;
-        invoker = new ClientInvoker();
+        invoker = new ChannelInvoker();
         nettyClient = new NettyClient(config);
         managerTask = new DefaultCMTask();
         RouteEnum routeEnum = config.getRoute();

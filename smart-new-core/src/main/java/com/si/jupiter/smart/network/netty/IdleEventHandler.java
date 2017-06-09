@@ -29,7 +29,7 @@ public class IdleEventHandler extends ChannelInboundHandlerAdapter {
 
             } else if (event.state().equals(IdleState.ALL_IDLE)) {
                 NetworkProtocol protocol = new NetworkProtocol();
-                protocol.setType((byte) -1);
+                protocol.setSerializeType((byte) -1);
                 protocol.setSequence(count++);
                 protocol.setContent(heart);
                 ctx.writeAndFlush(protocol);

@@ -4,9 +4,6 @@ import com.si.jupiter.smart.clent.ClusterManagerType;
 import com.si.jupiter.smart.network.SerializableEnum;
 import com.si.jupiter.smart.route.RouteEnum;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Author: lizhipeng
  * Date: 2017/01/03 18:10
@@ -17,7 +14,7 @@ public class ClientConfig<T> {
     private int timeout = 1000;
     private Class<T> interfaze;//服务接口类
     private String version;//服务版本
-    private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式
+    private SerializableEnum serializeType = SerializableEnum.PROTOBUF;//序列化方式
     private int workThreadSize = 4;
     private int nettyBossThreadSize = 1;
     private RouteEnum route = RouteEnum.ROUND;//路由方式
@@ -52,8 +49,8 @@ public class ClientConfig<T> {
         return this;
     }
 
-    public ClientConfig setType(SerializableEnum type) {
-        this.type = type;
+    public ClientConfig setSerializeType(SerializableEnum serializeType) {
+        this.serializeType = serializeType;
         return this;
     }
 
@@ -83,8 +80,8 @@ public class ClientConfig<T> {
         return timeout;
     }
 
-    public SerializableEnum getType() {
-        return type;
+    public SerializableEnum getSerializeType() {
+        return serializeType;
     }
 
     public int getNettyBossThreadSize() {

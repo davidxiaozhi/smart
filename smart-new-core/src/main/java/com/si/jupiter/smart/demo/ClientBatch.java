@@ -17,11 +17,11 @@ import java.util.concurrent.Future;
  * Author: lizhipeng
  * Date: 2017/01/04 12:05
  */
-public class Client2 {
+public class ClientBatch {
     public static void main(String[] args) throws Exception {
         final ClientConfig<Test> conf = new ClientConfig();
-        conf.setHost("127.0.0.1:5050;127.0.0.1:5051;127.0.0.1:5052").setRoute(RouteEnum.CONSISTENTHASH).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
-        final Test t = SmartClientFactory.getServiceConsumer(conf);
+        conf.setHost("127.0.0.1:5050;127.0.0.1:5051;127.0.0.1:5052").setRoute(RouteEnum.CONSISTENTHASH).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setSerializeType(SerializableEnum.PROTOBUF);
+        final Test t = SmartClientFactory.makeClient(conf);
 
 
 

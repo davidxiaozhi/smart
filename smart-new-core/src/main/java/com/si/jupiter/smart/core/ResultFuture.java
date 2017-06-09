@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
  * Date: 2017/01/20 12:00
  */
 public class ResultFuture<T> extends ResponseFuture<T> {
-    private RpcFuture<RpcResult> future;
+    private volatile RpcFuture<RpcResult> future;
     private int packageId;
 
     public ResultFuture(RpcFuture<RpcResult> future, int packageId) {

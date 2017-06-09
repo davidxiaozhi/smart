@@ -56,7 +56,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
                 in.readBytes(content);
                 NetworkProtocol protocol = new NetworkProtocol();
                 protocol.setProtocolVersion(version);
-                protocol.setType(type);
+                protocol.setSerializeType(type);
                 protocol.setSequence(seq);
                 protocol.setContent(content);
                 return protocol;

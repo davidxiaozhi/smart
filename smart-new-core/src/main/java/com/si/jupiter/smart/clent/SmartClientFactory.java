@@ -15,7 +15,7 @@ public class SmartClientFactory {
      * @param <T> T
      * @return T
      */
-    public static <T> T getServiceConsumer(ClientConfig<T> conf) {
+    public static <T> T makeClient(ClientConfig<T> conf) {
         SmartClient<T> client = new SmartClient<T>(conf);
         client.init();
         return client.getClient();

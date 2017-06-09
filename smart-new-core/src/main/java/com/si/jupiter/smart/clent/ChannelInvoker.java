@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
  * Author: lizhipeng
  * Date: 2017/01/08 12:00
  */
-public class ClientInvoker implements Invoker {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ClientInvoker.class);
+public class ChannelInvoker implements Invoker {
+    private final static Logger LOGGER = LoggerFactory.getLogger(ChannelInvoker.class);
 
     @Override
     public void invoke(final Channel ch, final NetworkProtocol protocol, final int packageId) throws Exception {
