@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * todo : rpcfuture真正的一个实现，主要负责锁的维护和释放
  * Author: lizhipeng
  * Date: 2017/01/06 19:24
- * 结果封装Future
  */
 public class ResponseFuture<T> extends RpcFuture<T> {
     private Semaphore lock = new Semaphore(0);
@@ -55,7 +55,7 @@ public class ResponseFuture<T> extends RpcFuture<T> {
     /**
      * 设置结果
      *
-     * @param response 服务返回结果
+     * @param response 服务返回结果时触发，释放锁,以便让get方法执行
      */
     public void responseReceived(T response) {
         this.response = response;

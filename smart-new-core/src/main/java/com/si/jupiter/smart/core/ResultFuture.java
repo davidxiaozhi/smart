@@ -5,12 +5,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * ResponseFuture　子类主要负责请求　响应关系的维护
  * Author: lizhipeng
  * Date: 2017/01/20 12:00
  */
 public class ResultFuture<T> extends ResponseFuture<T> {
     private volatile RpcFuture<RpcResult> future;
-    private int packageId;
+    private int packageId;//请求序列号
 
     public ResultFuture(RpcFuture<RpcResult> future, int packageId) {
         super(future.invokerTimeout);

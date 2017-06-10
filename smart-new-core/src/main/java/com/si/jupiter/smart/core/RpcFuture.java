@@ -3,6 +3,7 @@ package com.si.jupiter.smart.core;
 import java.util.concurrent.Future;
 
 /**
+ * rpc通信顶级future,主要定义　请求发送时间及对应超时时间
  * Author: lizhipeng
  * Date: 2017/01/20 10:46
  */

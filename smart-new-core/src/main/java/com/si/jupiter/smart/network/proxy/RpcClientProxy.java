@@ -10,6 +10,8 @@ import net.sf.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 
 /**
+ * 代理类的实现，真正服务响应结果的future产生
+ *
  * Author: lizhipeng
  * Date: 2017/01/03 17:29
  */

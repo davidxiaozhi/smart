@@ -45,6 +45,9 @@ public class FuturesManager {
         msgManager.remove(seq);
     }
 
+    /**
+     * 通过定时器清除超时的future
+     */
     static {
         Timer timer = new Timer("smart-response-timer", true);
         timer.schedule(new TimerTask() {
