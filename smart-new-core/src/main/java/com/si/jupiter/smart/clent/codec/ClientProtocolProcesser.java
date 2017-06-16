@@ -4,6 +4,7 @@ import com.si.jupiter.smart.clent.config.ClientConfig;
 import com.si.jupiter.smart.core.NetworkProtocol;
 import com.si.jupiter.smart.core.RpcInvocation;
 import com.si.jupiter.smart.core.SmartRequest;
+import com.si.jupiter.smart.core.thrift.TProtocolTools;
 import com.si.jupiter.smart.network.SerializableEnum;
 import com.si.jupiter.smart.network.SerializableHandler;
 
@@ -17,9 +18,13 @@ import com.si.jupiter.smart.network.SerializableHandler;
 public class ClientProtocolProcesser<T> implements CProtocolProcesser<T> {
     private SerializableEnum serializeType;
     private int requestTimeout;
+    private TProtocolTools tpProcesser;
     public ClientProtocolProcesser(ClientConfig<T> clientConfig) {
         this.serializeType = clientConfig.getSerializeType();
         this.requestTimeout = clientConfig.getRequestTimeout();
+        if(SerializableEnum.THRIFT.equals(this.serializeType)){
+            this.tpProcesser = new TProtocolTools(clientConfig);
+        }
     }
 
     /**
@@ -29,6 +34,12 @@ public class ClientProtocolProcesser<T> implements CProtocolProcesser<T> {
      */
     @Override
     public NetworkProtocol buildRequestProtocol(SmartRequest smartRequest) {
+        if(SerializableEnum.THRIFT.equals(this.serializeType)){
+            return tpProcesser.buildThriftRequestProtocol(smartRequest);
+        }
+        return buildDefaultRequestProtocol(smartRequest);
+    }
+    private NetworkProtocol buildDefaultRequestProtocol(SmartRequest smartRequest) {
         RpcInvocation invocation = new RpcInvocation();
         invocation.setService(smartRequest.getServiceName());
         invocation.setVersion(smartRequest.getVersion());

@@ -4,6 +4,8 @@ package com.si.jupiter.smart.network.netty;
 import com.si.jupiter.smart.core.FuturesManager;
 import com.si.jupiter.smart.core.NetworkProtocol;
 import com.si.jupiter.smart.core.RpcResult;
+import com.si.jupiter.smart.core.thrift.ThriftTask;
+import com.si.jupiter.smart.network.SerializableEnum;
 import com.si.jupiter.smart.network.SerializableHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -29,16 +31,28 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<NetworkProto
         if (msg.getSerializeType() == -1) {
             LOGGER.debug("Client recv heart package id={}", msg.getSequence());
         } else {
-            this.executor.submit(new Runnable() {
-                public void run() {
-                    try {
-                        RpcResult result = SerializableHandler.responseDecode(msg);
-                        FuturesManager.release(msg.getSequence(), result);
-                    } catch (Exception e) {
-                        LOGGER.error("Client handler fail.", e);
-                    }
-                }
-            });
+            if (SerializableEnum.THRIFT.getValue() == msg.getSerializeType()){
+                this.executor.submit(new ThriftTask(msg));
+            }else{
+                this.executor.submit(new Task(msg));
+            }
+        }
+    }
+    public static class Task implements Runnable{
+        private final NetworkProtocol msg;
+
+        public Task(NetworkProtocol msg) {
+            this.msg = msg;
+        }
+
+        @Override
+        public void run() {
+            try {
+                RpcResult result = SerializableHandler.responseDecode(msg);
+                FuturesManager.release(msg.getSequence(), result);
+            } catch (Exception e) {
+                LOGGER.error("Client handler fail.", e);
+            }
         }
     }
 

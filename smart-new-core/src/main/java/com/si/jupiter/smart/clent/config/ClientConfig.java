@@ -1,6 +1,7 @@
 package com.si.jupiter.smart.clent.config;
 
 import com.si.jupiter.smart.clent.ClusterManagerType;
+import com.si.jupiter.smart.core.thrift.ThriftConfig;
 import com.si.jupiter.smart.network.SerializableEnum;
 import com.si.jupiter.smart.route.RouteEnum;
 
@@ -20,6 +21,7 @@ public class ClientConfig<T> {
     private RouteEnum route = RouteEnum.ROUND;//路由方式
     private ClusterManagerType clusterManagerType= ClusterManagerType.Local;
     private ClientConfigOption clusterManagerConfig = new ClientConfigOption();
+    private ThriftConfig<T> thriftConfig;
     public ClientConfig(){}
     public <C> ClientConfigOption configOption(ConfigOption<C> option, C value){
         return clusterManagerConfig.option(option,value);
@@ -38,6 +40,11 @@ public class ClientConfig<T> {
         this.host = host;
         return this;
     }
+    public ClientConfig setThriftConfig(ThriftConfig thriftConfig) {
+        this.thriftConfig = thriftConfig;
+        return this;
+    }
+
     public ClientConfig setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
         return this;
@@ -111,4 +118,7 @@ public class ClientConfig<T> {
         return clusterManagerType;
     }
 
+    public ThriftConfig<T> getThriftConfig() {
+        return thriftConfig;
+    }
 }

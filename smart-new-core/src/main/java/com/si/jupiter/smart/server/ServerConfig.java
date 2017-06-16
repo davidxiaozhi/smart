@@ -1,5 +1,7 @@
 package com.si.jupiter.smart.server;
 
+import com.si.jupiter.smart.core.thrift.ServerThriftConfig;
+
 /**
  * Author: lizhipeng
  * Date: 2017/01/04 10:56
@@ -10,6 +12,7 @@ public class ServerConfig {
     private int corePoolSize = 8;//服务work线程数
     private int nettyWorkPooleSize = 2;//netty work线程数
     private int connentTimeout;//连接超时时间 毫秒
+    private ServerThriftConfig thriftConfig;
 
     public String getIp() {
         return ip;
@@ -54,5 +57,13 @@ public class ServerConfig {
     public ServerConfig setConnentTimeout(int connentTimeout) {
         this.connentTimeout = connentTimeout;
         return this;
+    }
+
+    public ServerThriftConfig getThriftConfig() {
+        return thriftConfig;
+    }
+
+    public void setThriftConfig(ServerThriftConfig thriftConfig) {
+        this.thriftConfig = thriftConfig;
     }
 }

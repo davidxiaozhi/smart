@@ -1,10 +1,14 @@
 package com.si.jupiter.smart.server;
 
-import com.si.jupiter.smart.core.*;
+import com.si.jupiter.smart.core.NetworkProtocol;
+import com.si.jupiter.smart.core.RpcInvocation;
+import com.si.jupiter.smart.core.RpcResult;
+import com.si.jupiter.smart.core.ServiceMapper;
+import com.si.jupiter.smart.core.thrift.ThriftProcesser;
+import com.si.jupiter.smart.network.SerializableEnum;
 import com.si.jupiter.smart.network.SerializableHandler;
 import com.si.jupiter.smart.server.codec.ServerProtocolProcesser;
 import com.si.jupiter.smart.server.codec.ServiceUtils;
-import com.si.jupiter.smart.server.codec.SProtocolProcesser;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,10 +26,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class ServiceInvokeManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceInvokeManager.class);
-    private SProtocolProcesser protocolProcesser;
+    private ServerProtocolProcesser protocolProcesser;
     private ThreadPoolExecutor executor;
     private ServerConfig config;
-
+    private ThriftProcesser thriftProcesser;
     /**
      * 构造函数
      *
@@ -36,6 +40,7 @@ public class ServiceInvokeManager {
         this.executor = executor;
         this.config = config;
         protocolProcesser = new ServerProtocolProcesser();
+        thriftProcesser = new ThriftProcesser(config);
     }
 
     /**
@@ -45,11 +50,47 @@ public class ServiceInvokeManager {
      * @param ctx      channel对象
      */
     public void invoke(final NetworkProtocol protocol, final ChannelHandlerContext ctx) {
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("the netty start server invoker!!!");
+        }
         this.executor.submit(new Runnable() {
             @Override
             public void run() {
                 //将协议当中context进行反序列化
-                RpcInvocation invocation = SerializableHandler.requestDecode(protocol);
+                RpcInvocation invocation = null;
+                byte[] thriftResult = new byte[0];
+                if(SerializableEnum.THRIFT.getValue()==protocol.getSerializeType()){
+                    NetworkProtocol protocol_response = new NetworkProtocol();
+                    protocol_response.setRequestTime(protocol.getRequestTime());
+                    protocol_response.setRequestTimeout(protocol.getRequestTimeout());
+                    protocol_response.setProtocolVersion(protocol.getProtocolVersion());
+                    protocol_response.setSequence(protocol.getSequence());
+                    protocol_response.setSerializeType(protocol.getSerializeType());
+                    try {
+                        thriftResult=thriftProcesser.process(protocol.getContent());
+                        protocol_response.setContent(thriftResult);
+                    } catch (Exception e) {
+                        protocol_response.getHeader().setToken(e.getMessage());
+                        LOGGER.error("thrift Invoke exception.", e);
+                    }
+                    try {
+                        ChannelFuture channelFuture = ctx.writeAndFlush(protocol_response);
+                        if (LOGGER.isDebugEnabled()) {
+                            final long startTime = System.currentTimeMillis();
+                            channelFuture.addListeners(new ChannelFutureListener() {
+                                @Override
+                                public void operationComplete(ChannelFuture future) throws Exception {
+                                    LOGGER.debug("smart send thrift msg packageId={} cost {}ms, exception={}", protocol.getSequence(), (System.currentTimeMillis() - startTime), future.cause());
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Server invoke fail.", e);
+                    }
+                }
+                else{
+                    invocation = SerializableHandler.requestDecode(protocol);
+                }
                 long reqTime = protocol.getRequestTime();
                 int timeout = protocol.getRequestTimeout();
                 if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用执行了
