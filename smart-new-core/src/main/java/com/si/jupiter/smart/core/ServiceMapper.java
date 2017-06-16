@@ -1,6 +1,7 @@
 package com.si.jupiter.smart.core;
 
 import com.si.jupiter.smart.server.Provider;
+import com.si.jupiter.smart.server.codec.ServiceUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class ServiceMapper {
             serviceMethodMap.put(serviceName, methodMap);
             //当前服务的服务标识当中的api方法名字(方法名+参数类型)
             for (Method method : methods) {
-                methodMap.put(ProtocolProcesserImpl.buildMethodName(method), method);
+                methodMap.put(ServiceUtils.buildMethodName(method), method);
             }
             servicesMap.put(serviceName, provider.getService());
         }

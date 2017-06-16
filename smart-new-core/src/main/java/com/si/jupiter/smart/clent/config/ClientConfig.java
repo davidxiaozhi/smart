@@ -10,18 +10,18 @@ import com.si.jupiter.smart.route.RouteEnum;
  */
 public class ClientConfig<T> {
     private String host;
-    private int connectTimeout;
-    private int timeout = 1000;
+    private int requestTimeout = 1000;
+    private int connectTimeout = 1000;
     private Class<T> interfaze;//服务接口类
     private String version;//服务版本
     private SerializableEnum serializeType = SerializableEnum.PROTOBUF;//序列化方式
     private int workThreadSize = 4;
     private int nettyBossThreadSize = 1;
     private RouteEnum route = RouteEnum.ROUND;//路由方式
-    private ClusterManagerType clusterManagerType=ClusterManagerType.Local;
+    private ClusterManagerType clusterManagerType= ClusterManagerType.Local;
     private ClientConfigOption clusterManagerConfig = new ClientConfigOption();
-
-    public <C> ClientConfigOption configOption(ConfigOption<C> option,C value){
+    public ClientConfig(){}
+    public <C> ClientConfigOption configOption(ConfigOption<C> option, C value){
         return clusterManagerConfig.option(option,value);
     }
     public String getHost() {
@@ -38,14 +38,8 @@ public class ClientConfig<T> {
         this.host = host;
         return this;
     }
-
-    public ClientConfig setConnectTimeout(int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-        return this;
-    }
-
-    public ClientConfig setTimeout(int timeout) {
-        this.timeout = timeout;
+    public ClientConfig setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
         return this;
     }
 
@@ -62,7 +56,13 @@ public class ClientConfig<T> {
         this.workThreadSize = workThreadSize;
         return this;
     }
-
+    public ClientConfig setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+        return this;
+    }
+    public int getConnectTimeout(){
+        return this.connectTimeout;
+    }
     public Class<T> getInterfaze() {
         return interfaze;
     }
@@ -72,12 +72,8 @@ public class ClientConfig<T> {
         return this;
     }
 
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public int getTimeout() {
-        return timeout;
+    public int getRequestTimeout() {
+        return requestTimeout;
     }
 
     public SerializableEnum getSerializeType() {
@@ -114,4 +110,5 @@ public class ClientConfig<T> {
     public ClusterManagerType getClusterManagerType() {
         return clusterManagerType;
     }
+
 }

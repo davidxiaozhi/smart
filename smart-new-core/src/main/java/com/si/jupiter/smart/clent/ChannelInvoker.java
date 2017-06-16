@@ -19,6 +19,7 @@ public class ChannelInvoker implements Invoker {
 
     @Override
     public void invoke(final Channel ch, final NetworkProtocol protocol, final int packageId) throws Exception {
+        protocol.setRequestTime(System.currentTimeMillis());//the request time
         ChannelFuture channelFuture = ch.writeAndFlush(protocol);
         if (LOGGER.isDebugEnabled()) {
             final long startTime = System.currentTimeMillis();

@@ -2,6 +2,9 @@ package com.si.jupiter.smart.server;
 
 import com.si.jupiter.smart.core.*;
 import com.si.jupiter.smart.network.SerializableHandler;
+import com.si.jupiter.smart.server.codec.ServerProtocolProcesser;
+import com.si.jupiter.smart.server.codec.ServiceUtils;
+import com.si.jupiter.smart.server.codec.SProtocolProcesser;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -19,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class ServiceInvokeManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceInvokeManager.class);
-    private ProtocolProcesserImpl protocolProcesser;
+    private SProtocolProcesser protocolProcesser;
     private ThreadPoolExecutor executor;
     private ServerConfig config;
 
@@ -32,7 +35,7 @@ public class ServiceInvokeManager {
     public ServiceInvokeManager(ServerConfig config, ThreadPoolExecutor executor) {
         this.executor = executor;
         this.config = config;
-        protocolProcesser = new ProtocolProcesserImpl(null);
+        protocolProcesser = new ServerProtocolProcesser();
     }
 
     /**
@@ -47,10 +50,10 @@ public class ServiceInvokeManager {
             public void run() {
                 //将协议当中context进行反序列化
                 RpcInvocation invocation = SerializableHandler.requestDecode(protocol);
-                long reqTime = invocation.getRequestTime();
-                int timeout = invocation.getRequestTimeout();
+                long reqTime = protocol.getRequestTime();
+                int timeout = protocol.getRequestTimeout();
                 if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用执行了
-                    String methodName = ProtocolProcesserImpl.buildMethodName(invocation.getMethod(), invocation.getArgTypes());
+                    String methodName = ServiceUtils.buildMethodName(invocation.getMethod(), invocation.getArgTypes());
                     Object res = null;
                     Throwable throwable = null;
                     try {

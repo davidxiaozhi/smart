@@ -24,9 +24,11 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         int maxConnectionNums = Integer.valueOf(Config.getValue("",100));
         pipeline.addLast("connection_manager",new NettyConnectionLimiter(maxConnectionNums));
         // 字符串解码 和 编码
+        pipeline.addLast("debug",new NettyDebugHandler("debug",true));
         pipeline.addLast("decoder", new NettyMessageDecoder());
         pipeline.addLast("encoder", new NettyMessageEncoder());
         // 自己的逻辑Handler
         pipeline.addLast("handler", new NettyServerHandler(manager));
+        pipeline.addLast("debug1",new NettyDebugHandler("debug1",true));
     }
 }

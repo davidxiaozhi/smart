@@ -33,6 +33,8 @@ public class NettyConnectionLimiter extends ChannelInboundHandlerAdapter {
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         if (maxConnections > 0 && numConnections.decrementAndGet() < 0) {
             logger.info("BUG in NettyConnectionLimiter!!!!!");
+        }else{
+            logger.debug("the connnecton ({}) was closed,current connection nums is {}", ctx.channel().remoteAddress(),numConnections.get());
         }
         super.channelUnregistered(ctx);
     }

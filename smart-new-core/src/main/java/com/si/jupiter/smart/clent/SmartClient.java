@@ -1,8 +1,9 @@
 package com.si.jupiter.smart.clent;
 
 
+import com.si.jupiter.smart.clent.codec.CProtocolProcesser;
+import com.si.jupiter.smart.clent.codec.ClientProtocolProcesser;
 import com.si.jupiter.smart.clent.config.ClientConfig;
-import com.si.jupiter.smart.core.ProtocolProcesserImpl;
 import com.si.jupiter.smart.core.RequestContext;
 import com.si.jupiter.smart.network.proxy.RpcClientProxy;
 
@@ -13,7 +14,7 @@ import com.si.jupiter.smart.network.proxy.RpcClientProxy;
 public class SmartClient<T> {
     private volatile T client;
     private ClientConfig conf;
-    private ProtocolProcesserImpl processer;
+    private CProtocolProcesser processer;
     private volatile ClientManager manager;
 
     public SmartClient(ClientConfig conf) {
@@ -28,7 +29,7 @@ public class SmartClient<T> {
         if (manager == null) {
             synchronized (SmartClient.class) {
                 if (manager == null) {
-                    this.processer = new ProtocolProcesserImpl(this.conf);
+                    this.processer = new ClientProtocolProcesser(this.conf);
                     this.manager = new ClientManager(processer, this.conf);
                     this.manager.initCluster();
                     RpcClientProxy proxy = new RpcClientProxy(manager);

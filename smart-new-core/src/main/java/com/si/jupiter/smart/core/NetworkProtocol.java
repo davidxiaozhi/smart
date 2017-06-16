@@ -7,29 +7,20 @@ import java.io.Serializable;
  * Date: 2017/01/02 17:08
  * 网络协议
  * 2017-0509 协议定义
- * 占用字节 　内容
- * 1　　　　　协议魔数
- * 2-5(4)   消息总长度(m)
- * 6-9(4)　　　消息header长度(n)
- * 10-(10+n)  n字节的header
- * (10+n+1)-(10+n+1+m) m字节的消息体
  */
 public class NetworkProtocol implements Serializable {
     public final static byte MAGIC_NUMBER = (byte) 89;//协议头
-    private ProtocolHeader header;
+    private final ProtocolHeader header = new ProtocolHeader();
     private byte protocolVersion =1;//协议版本
     private byte serializeType =1;//序列化方式
     private int sequence;//包序号
-    private int len;//内容长度
+    private int requestTimeout;//请求超时时间
+    private long requestTime;//请求时间
     private byte[] content;//包内容
-    private byte tail = (byte) 126;//协议尾
+    private byte tail = (byte) 111;//协议尾
 
     public ProtocolHeader getHeader() {
         return header;
-    }
-
-    public void setHeader(ProtocolHeader header) {
-        this.header = header;
     }
 
     public byte getMagicNumber() {
@@ -60,6 +51,18 @@ public class NetworkProtocol implements Serializable {
         this.sequence = sequence;
     }
 
+    public int getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
+
+    public void setTail(byte tail) {
+        this.tail = tail;
+    }
+
     public byte getTail() {
         return tail;
     }
@@ -70,5 +73,13 @@ public class NetworkProtocol implements Serializable {
 
     public void setContent(byte[] content) {
         this.content = content;
+    }
+
+    public long getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(long requestTime) {
+        this.requestTime = requestTime;
     }
 }
